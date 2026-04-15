@@ -7,7 +7,7 @@ export const seedSellers: Seller[] = [
     storeName: "Chom Chom Store",
     storeSlug: "chom-chom-store",
     template: "resort",
-    colors: { primary: "#FF3E9A", secondary: "#18B35D", accent: "#D4A853" },
+    colors: { primary: "#1B1B1B", secondary: "#FBF8F4", accent: "#C8956C" },
     logo: null,
     aboutText:
       "Welcome to Chom Chom Store! We curate the prettiest Lilly Pulitzer pieces, resort wear, and preppy favorites. All items are carefully inspected and described honestly. Happy shopping!",
@@ -23,7 +23,7 @@ export const seedSellers: Seller[] = [
     storeName: "Vintage Finds NYC",
     storeSlug: "vintage-finds-nyc",
     template: "vintage",
-    colors: { primary: "#C2410C", secondary: "#FEF3C7", accent: "#365314" },
+    colors: { primary: "#1A1A2E", secondary: "#F5F0EB", accent: "#B8860B" },
     logo: null,
     aboutText:
       "Hand-picked vintage and secondhand treasures from New York City. We believe in sustainable fashion and giving beautiful clothes a second life. Every piece tells a story.",
