@@ -5,7 +5,7 @@ export const seedSellers: Seller[] = [
     id: "seller-1",
     email: "hello@chomchom.store",
     storeName: "Chom Chom Store",
-    storeSlug: "chom-chom",
+    storeSlug: "chom-chom-store",
     template: "resort",
     colors: { primary: "#FF3E9A", secondary: "#18B35D", accent: "#D4A853" },
     logo: null,
