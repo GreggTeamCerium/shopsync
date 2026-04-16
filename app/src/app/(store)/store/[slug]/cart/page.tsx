@@ -82,7 +82,7 @@ export default function CartPage({
             {items.map((item, idx) => (
               <div
                 key={item.productId}
-                className="flex items-center gap-4 p-4"
+                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4"
                 style={{
                   borderTop: idx > 0 ? `1px solid ${colors.primary}10` : undefined,
                 }}

@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ShopSync
+
+Turn your Instagram into a real online store in 60 seconds. Zero platform fees.
+
+ShopSync is a SaaS tool that converts social media stores (Instagram, TikTok, Facebook) into standalone e-commerce websites. Sellers connect their social account, we auto-import their products via AI, and generate a professional store they own — with custom domain, Stripe payments, and zero transaction fees.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router) + TypeScript
+- **Styling:** Tailwind CSS 4
+- **Database:** Supabase (PostgreSQL + Auth + Storage)
+- **Payments:** Stripe (subscriptions + seller store payments)
+- **Hosting:** Vercel
+- **APIs:** Meta Graph API (Instagram import), OpenAI (caption parsing)
+- **Icons:** Lucide React
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+```bash
+npm install
+```
+
+### Environment Variables
+
+Create a `.env.local` file:
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Stripe
+STRIPE_SECRET_KEY=your_stripe_secret_key
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+
+# Meta/Instagram (optional for dev)
+META_APP_ID=your_meta_app_id
+META_APP_SECRET=your_meta_app_secret
+```
+
+> **Note:** The app runs with mock data if Supabase credentials are not provided.
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the marketing site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Demo stores are available at:
+- [http://localhost:3000/store/chom-chom-store](http://localhost:3000/store/chom-chom-store)
+- [http://localhost:3000/store/vintage-finds-nyc](http://localhost:3000/store/vintage-finds-nyc)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Build
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/
+│   ├── (auth)/            # Login, signup, forgot password
+│   ├── (dashboard)/       # Seller dashboard (products, orders, settings)
+│   ├── (marketing)/       # Landing page, pricing
+│   ├── (store)/           # Customer-facing store pages
+│   │   └── store/[slug]/
+│   │       ├── page.tsx          # Store homepage
+│   │       ├── shop/page.tsx     # Product grid with filters
+│   │       ├── product/[id]/     # Product detail
+│   │       ├── cart/page.tsx     # Shopping cart
+│   │       └── checkout/         # Checkout flow
+│   └── layout.tsx         # Root layout
+├── components/
+│   ├── store/             # Store-facing components
+│   ├── marketing/         # Marketing site components
+│   ├── dashboard/         # Dashboard components
+│   └── ui/                # Shared UI primitives
+└── lib/
+    ├── data/              # Data layer (types, seed data, in-memory store)
+    ├── templates.ts       # Store template configurations
+    ├── constants.ts       # App constants and pricing plans
+    ├── format.ts          # Price/date formatting utilities
+    ├── supabase.ts        # Supabase client
+    └── validations.ts     # Zod schemas
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available Templates
 
-## Deploy on Vercel
+| Template | Style | Inspired By |
+|----------|-------|-------------|
+| The Cabana | Warm, relaxed, sun-kissed | Reformation |
+| The Edit | Sharp, clean, confident | Everlane, COS |
+| The Atelier | Elevated, editorial, luxe | Aritzia, NET-A-PORTER |
+| The Gallery | All-white, gallery grid | Zara |
+| The Collective | Earthy, organic | Sustainable brands |
+| The Studio | Modern feminine | Charcoal + blush |
+| The Market | Classic Americana | Navy + warm white |
+| The Vault | Luxury, high-end | Black + gold |
+| The Bloom | Soft, delicate | Lavender + ivory |
+| The Boardwalk | Coastal, casual | Sandy + ocean blue |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Vercel (Recommended)
+
+1. Push to GitHub
+2. Import project in [Vercel](https://vercel.com)
+3. Add environment variables
+4. Deploy
+
+### Manual
+
+```bash
+npm run build
+npm start
+```
+
+## License
+
+Proprietary — all rights reserved.

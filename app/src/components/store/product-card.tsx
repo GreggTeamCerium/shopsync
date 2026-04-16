@@ -9,6 +9,7 @@ interface ProductCardProps {
   storeSlug: string;
   template: TemplateConfig;
   colors: { primary: string; secondary: string; accent: string };
+  showNewBadge?: boolean;
 }
 
 export function ProductCard({
@@ -16,13 +17,14 @@ export function ProductCard({
   storeSlug,
   template,
   colors,
+  showNewBadge,
 }: ProductCardProps) {
   const productSlug = product.id;
 
   return (
     <Link
       href={`/store/${storeSlug}/product/${productSlug}`}
-      className="group block"
+      className="group block min-w-0"
     >
       <div
         className="overflow-hidden bg-white"
@@ -31,7 +33,7 @@ export function ProductCard({
           boxShadow: template.cardShadow,
         }}
       >
-        <div className="aspect-[3/4] bg-gray-100 overflow-hidden">
+        <div className="aspect-[3/4] bg-gray-100 overflow-hidden relative">
           {product.images[0] ? (
             <img
               src={product.images[0]}
@@ -43,10 +45,21 @@ export function ProductCard({
               <Package className="h-10 w-10 text-gray-300" />
             </div>
           )}
+          {showNewBadge && (
+            <span
+              className="absolute top-2 left-2 px-2 py-0.5 text-xs font-semibold rounded-full"
+              style={{
+                backgroundColor: colors.accent || colors.primary,
+                color: colors.secondary,
+              }}
+            >
+              New
+            </span>
+          )}
         </div>
         <div className="p-3">
           <p
-            className="text-xs mb-1"
+            className="text-xs mb-1 truncate"
             style={{ color: colors.accent || "#6B7280" }}
           >
             {product.brand}
@@ -68,7 +81,7 @@ export function ProductCard({
               {formatPrice(product.price)}
             </p>
             <span
-              className="text-xs px-2 py-0.5 rounded-full"
+              className="text-xs px-2 py-0.5 rounded-full shrink-0"
               style={{
                 backgroundColor: `${colors.primary}10`,
                 color: colors.primary,

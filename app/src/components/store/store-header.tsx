@@ -29,10 +29,10 @@ export function StoreHeader({ seller, template, colors }: StoreHeaderProps) {
             {seller.storeName}
           </h1>
         </Link>
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-4 sm:gap-6">
           <Link
             href={`${baseSlug}/shop`}
-            className="text-sm font-medium hover:opacity-80 transition-opacity hidden sm:inline"
+            className="text-sm font-medium hover:opacity-80 transition-opacity"
             style={{ color: colors.primary }}
           >
             Shop

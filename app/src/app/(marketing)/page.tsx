@@ -12,6 +12,10 @@ import {
   ChevronDown,
   ShoppingBag,
   Star,
+  Image,
+  Store,
+  TrendingUp,
+  Heart,
 } from "lucide-react";
 
 const features = [
@@ -19,84 +23,112 @@ const features = [
     icon: Sparkles,
     title: "AI-Powered Import",
     description:
-      "We scan your Instagram posts and automatically extract product details — price, size, brand, and more.",
+      "Connect your Instagram and we'll scan your posts to extract prices, sizes, brands, and descriptions — automatically.",
   },
   {
     icon: Palette,
-    title: "Beautiful Templates",
+    title: "10 Beautiful Templates",
     description:
-      "Choose from professionally designed store templates. Customize colors, fonts, and layout to match your brand.",
+      "Pick from designer-quality store themes inspired by Reformation, Everlane, and Aritzia. Customize colors and fonts to match your brand.",
   },
   {
     icon: Globe,
     title: "Your Own Domain",
     description:
-      "Get a custom domain like yourstore.com. No more directing customers to marketplace profiles.",
+      "Get yourstore.com instead of a marketplace profile. Build real brand equity that you own.",
   },
   {
     icon: CreditCard,
-    title: "Keep 97% of Revenue",
+    title: "Keep 97% of Every Sale",
     description:
-      "Pay only standard Stripe fees (2.9% + 30¢). Zero ShopSync transaction fees on any plan.",
+      "Pay only standard Stripe fees (2.9% + 30¢). No ShopSync transaction fees, ever. Compare that to Poshmark's 20%.",
   },
   {
     icon: Smartphone,
-    title: "Mobile-Optimized",
+    title: "Mobile-First Design",
     description:
-      "Every store looks perfect on phones, tablets, and desktops. Your customers shop from anywhere.",
+      "90% of your buyers shop on their phone. Every ShopSync store is designed to convert on mobile.",
   },
   {
     icon: RefreshCw,
-    title: "Auto-Sync",
+    title: "Auto-Sync New Posts",
     description:
-      "New Instagram post? It automatically appears in your store. Keep selling without extra work.",
+      "Post to Instagram and your store updates automatically. List once, sell everywhere.",
   },
 ];
 
 const steps = [
   {
     number: "1",
-    title: "Connect Instagram",
-    description: "Link your Instagram business or creator account in one click.",
+    title: "Connect Your Instagram",
+    description:
+      "Link your business or creator account. Takes 30 seconds, no tech skills needed.",
     icon: Camera,
   },
   {
     number: "2",
-    title: "We Import Products",
+    title: "We Build Your Store",
     description:
-      "Our AI reads your posts and creates product listings automatically.",
+      "Our AI reads your posts, extracts product details, and creates your listings automatically.",
     icon: ShoppingBag,
   },
   {
     number: "3",
-    title: "Your Store is Live",
+    title: "Start Selling",
     description:
-      "Review, customize, and publish. Your professional store is ready to sell.",
+      "Pick a template, customize your brand, and share your link. You're live.",
     icon: Star,
   },
 ];
 
 const testimonials = [
   {
-    name: "Sarah M.",
-    role: "Vintage Clothing Seller",
+    name: "Rachel K.",
+    role: "Reseller, @rachels.closet",
     quote:
-      "I was spending hours listing items on multiple platforms. ShopSync imported everything from my Instagram in minutes. My sales doubled in the first month.",
-    avatar: "S",
+      "I was copy-pasting listings between Poshmark, Depop, and my Instagram DMs. ShopSync pulled 47 products from my feed in under 2 minutes. My own site, my own brand, and I keep way more per sale.",
+    avatar: "R",
   },
   {
-    name: "Marcus T.",
-    role: "Sneaker Reseller",
+    name: "Dani M.",
+    role: "Vintage Seller, @danisfinds",
     quote:
-      "The 15% marketplace fees were killing my margins. Now I keep almost everything. Best decision I made for my business.",
-    avatar: "M",
+      "My regulars used to DM me 'is this still available?' 50 times a day. Now I just send them my ShopSync link. They can see what's available, add to cart, and pay — no back and forth. Revenue up 40% in two months.",
+    avatar: "D",
   },
   {
-    name: "Jessica L.",
-    role: "Jewelry Designer",
+    name: "Priya S.",
+    role: "Jewelry Designer, @priyacreates",
     quote:
-      "My store looks more professional than brands 10x my size. Customers trust it more than my Instagram DMs. Game changer.",
-    avatar: "J",
+      "I was paying Etsy $0.20 per listing plus 6.5% per sale. On ShopSync I pay $19/month flat and keep almost everything. The templates look better than my friend's Shopify site that cost $2K to build.",
+    avatar: "P",
+  },
+];
+
+const socialSellers = [
+  {
+    icon: Image,
+    title: "Instagram Sellers",
+    description:
+      "Resellers, boutique owners, and creators selling through posts and stories. Import your entire catalog in one click.",
+  },
+  {
+    icon: Heart,
+    title: "Poshmark & Depop Sellers",
+    description:
+      "Tired of 20% fees and algorithm changes? Own your storefront and your customer relationships.",
+  },
+  {
+    icon: Store,
+    title: "Facebook Marketplace Sellers",
+    description:
+      "Graduate from local pickup to a professional online store with nationwide shipping.",
+  },
+  {
+    icon: TrendingUp,
+    title: "TikTok Shop Sellers",
+    description:
+      "Your followers already want to buy. Give them a real checkout experience, not just a link in bio.",
   },
 ];
 
@@ -158,20 +190,21 @@ export default function HomePage() {
               Now in beta — free to get started
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-navy leading-[1.1]">
-              Turn Your Instagram Into a{" "}
-              <span className="text-primary">Real Store</span> — in 60 Seconds
+              Your Instagram Products Deserve{" "}
+              <span className="text-primary">Their Own Store</span>
             </h1>
             <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Stop paying 20% fees to marketplaces. Own your store. Keep your
-              profits. ShopSync auto-imports your products and creates a
-              professional storefront instantly.
+              You&apos;re already selling on Instagram. But between DM negotiations,
+              20% marketplace fees, and no-show buyers — you&apos;re leaving money on
+              the table. ShopSync turns your posts into a professional store in
+              60 seconds.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/signup"
                 className="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/25 gap-2"
               >
-                Get Started Free <ArrowRight className="h-4 w-4" />
+                Start Your Free Store <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/pricing"
@@ -222,10 +255,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-navy">
-              How It Works
+              Live in 60 Seconds. Seriously.
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-xl mx-auto">
-              Three simple steps to your own professional store
+              No coding. No design skills. No Shopify tutorials.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
@@ -249,22 +282,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Built for Social Sellers */}
+      <section className="py-20 sm:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-navy">
+              Built for Social Sellers
+            </h2>
+            <p className="mt-4 text-lg text-gray-600 max-w-xl mx-auto">
+              Whether you sell vintage, handmade, or designer — if you&apos;re selling
+              on social media, ShopSync is built for you.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {socialSellers.map((seller) => (
+              <div
+                key={seller.title}
+                className="flex gap-4 p-6 rounded-2xl border border-gray-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all"
+              >
+                <div className="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary">
+                  <seller.icon className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-navy mb-1">
+                    {seller.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {seller.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Grid */}
-      <section id="features" className="py-20 sm:py-28">
+      <section id="features" className="py-20 sm:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-navy">
               Everything You Need to Sell Online
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-xl mx-auto">
-              Powerful features that make selling simple
+              No marketplace restrictions. No hidden fees. Just your products, your brand, your rules.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="p-6 rounded-2xl border border-gray-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all"
+                className="p-6 rounded-2xl bg-white border border-gray-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all"
               >
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
                   <feature.icon className="h-6 w-6" />
@@ -282,7 +350,7 @@ export default function HomePage() {
       </section>
 
       {/* Pricing Preview */}
-      <section className="py-20 sm:py-28 bg-gray-50">
+      <section className="py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-navy">
@@ -301,7 +369,7 @@ export default function HomePage() {
                 <span className="text-gray-500">/mo</span>
               </div>
               <p className="mt-2 text-sm text-gray-600">
-                Get started with the basics
+                Perfect for testing the waters
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -320,7 +388,7 @@ export default function HomePage() {
                 href="/signup"
                 className="mt-8 block w-full text-center py-2.5 rounded-lg border-2 border-gray-300 text-navy font-semibold hover:border-primary hover:text-primary transition-colors text-sm"
               >
-                Get Started Free
+                Start Your Free Store
               </Link>
             </div>
 
@@ -335,7 +403,7 @@ export default function HomePage() {
                 <span className="text-gray-500">/mo</span>
               </div>
               <p className="mt-2 text-sm text-gray-600">
-                Everything you need to sell
+                Everything you need to sell seriously
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -355,7 +423,7 @@ export default function HomePage() {
                 href="/signup"
                 className="mt-8 block w-full text-center py-2.5 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition-colors text-sm"
               >
-                Start Selling
+                Start Your Free Store
               </Link>
             </div>
 
@@ -367,7 +435,7 @@ export default function HomePage() {
                 <span className="text-gray-500">/mo</span>
               </div>
               <p className="mt-2 text-sm text-gray-600">
-                Scale your business
+                For full-time sellers ready to scale
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -388,7 +456,7 @@ export default function HomePage() {
                 href="/signup"
                 className="mt-8 block w-full text-center py-2.5 rounded-lg border-2 border-gray-300 text-navy font-semibold hover:border-primary hover:text-primary transition-colors text-sm"
               >
-                Go Pro
+                Start Your Free Store
               </Link>
             </div>
           </div>
@@ -396,14 +464,14 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 sm:py-28">
+      <section className="py-20 sm:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-navy">
-              Loved by Sellers
+              Sellers Who Made the Switch
             </h2>
             <p className="mt-4 text-lg text-gray-600">
-              Join thousands of sellers who switched to ShopSync
+              Real sellers, real results
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -439,7 +507,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-20 sm:py-28 bg-gray-50">
+      <section id="faq" className="py-20 sm:py-28">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-navy">
