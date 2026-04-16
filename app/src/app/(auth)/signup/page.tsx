@@ -3,10 +3,19 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signupSchema, type SignupInput } from "@/lib/validations";
-import { getSupabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
+
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 export default function SignupPage() {
   const router = useRouter();
@@ -20,6 +29,7 @@ export default function SignupPage() {
   >({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,8 +48,11 @@ export default function SignupPage() {
     }
 
     setLoading(true);
-    const supabase = getSupabase();
-    if (!supabase) {
+
+    let supabase;
+    try {
+      supabase = createClient();
+    } catch {
       setServerError(
         "Authentication is not configured. Please set up Supabase credentials."
       );
@@ -47,12 +60,13 @@ export default function SignupPage() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
         data: {
           store_name: form.storeName,
+          store_slug: slugify(form.storeName),
         },
       },
     });
@@ -63,7 +77,37 @@ export default function SignupPage() {
       return;
     }
 
+    // If email confirmation is required, no session is returned.
+    if (!data.session) {
+      setNeedsConfirmation(true);
+      setLoading(false);
+      return;
+    }
+
     router.push("/dashboard");
+    router.refresh();
+  }
+
+  if (needsConfirmation) {
+    return (
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
+          <CheckCircle2 className="h-6 w-6" />
+        </div>
+        <h1 className="text-2xl font-bold text-navy mb-2">Check your email</h1>
+        <p className="text-gray-600 text-sm mb-6">
+          We sent a confirmation link to{" "}
+          <span className="font-medium text-navy">{form.email}</span>. Click it
+          to activate your account.
+        </p>
+        <Link
+          href="/login"
+          className="text-sm text-primary font-medium hover:text-primary-dark"
+        >
+          Back to login
+        </Link>
+      </div>
+    );
   }
 
   return (

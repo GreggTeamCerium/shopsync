@@ -9,35 +9,79 @@ import {
   ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
+import { getCurrentSeller, getProductsBySeller, getOrdersBySeller } from "@/lib/data";
+import { formatPrice } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Dashboard — ShopSync",
 };
 
-const stats = [
-  { label: "Products", value: "0", icon: Package, change: null },
-  { label: "Orders", value: "0", icon: ShoppingCart, change: null },
-  { label: "Store Views", value: "0", icon: Eye, change: null },
-  { label: "Revenue", value: "$0", icon: DollarSign, change: null },
-];
+export default async function DashboardPage() {
+  const seller = await getCurrentSeller();
+  // Layout already redirects if no seller, so this is for type narrowing.
+  if (!seller) return null;
 
-const checklist = [
-  {
-    label: "Add your first product",
-    done: false,
-    href: "/dashboard/products",
-  },
-  { label: "Choose a template", done: false, href: "/dashboard/settings" },
-  { label: "Connect Stripe", done: false, href: "/dashboard/settings" },
-  { label: "Set up your domain", done: false, href: "/dashboard/settings" },
-];
+  const [products, orders] = await Promise.all([
+    getProductsBySeller(seller.id),
+    getOrdersBySeller(seller.id),
+  ]);
 
-export default function DashboardPage() {
+  const completedOrders = orders.filter((o) => o.status === "completed");
+  const revenue = completedOrders.reduce((sum, o) => sum + o.total, 0);
+
+  const stats = [
+    {
+      label: "Products",
+      value: String(products.length),
+      icon: Package,
+    },
+    {
+      label: "Orders",
+      value: String(orders.length),
+      icon: ShoppingCart,
+    },
+    {
+      label: "Store Views",
+      value: "—",
+      icon: Eye,
+    },
+    {
+      label: "Revenue",
+      value: revenue > 0 ? formatPrice(revenue) : "$0",
+      icon: DollarSign,
+    },
+  ];
+
+  const checklist = [
+    {
+      label: "Add your first product",
+      done: products.length > 0,
+      href: "/dashboard/products",
+    },
+    {
+      label: "Choose a template",
+      done: seller.template !== "minimal" || seller.aboutText.length > 0,
+      href: "/dashboard/settings",
+    },
+    {
+      label: "Connect Stripe",
+      done: Boolean(seller.stripeAccountId),
+      href: "/dashboard/settings",
+    },
+    {
+      label: "Set up your domain",
+      done: Boolean(seller.customDomain),
+      href: "/dashboard/settings",
+    },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       {/* Welcome */}
       <div>
-        <h1 className="text-2xl font-bold text-navy">Welcome to ShopSync</h1>
+        <h1 className="text-2xl font-bold text-navy">
+          Welcome to ShopSync
+        </h1>
         <p className="text-gray-600 mt-1">
           Get your store up and running with the checklist below.
         </p>

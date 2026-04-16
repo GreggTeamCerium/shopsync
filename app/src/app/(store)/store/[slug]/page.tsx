@@ -13,7 +13,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const seller = getSellerBySlug(slug);
+  const seller = await getSellerBySlug(slug);
   if (!seller) return {};
   return {
     title: `${seller.storeName} | ShopSync`,
@@ -43,12 +43,12 @@ export default async function StoreHomePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const seller = getSellerBySlug(slug);
+  const seller = await getSellerBySlug(slug);
   if (!seller) notFound();
 
   const template = getTemplate(seller.template);
   const colors = getEffectiveColors(seller.template, seller.colors);
-  const products = getAvailableProductsBySeller(seller.id);
+  const products = await getAvailableProductsBySeller(seller.id);
   const featured = products.slice(0, 4);
 
   // Get unique categories with product counts

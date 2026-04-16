@@ -15,8 +15,10 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, productSlug } = await params;
-  const seller = getSellerBySlug(slug);
-  const product = getProductById(productSlug);
+  const [seller, product] = await Promise.all([
+    getSellerBySlug(slug),
+    getProductById(productSlug),
+  ]);
   if (!seller || !product) return {};
   return {
     title: `${product.name} - ${seller.storeName}`,
@@ -26,12 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug, productSlug } = await params;
-  const seller = getSellerBySlug(slug);
+  const seller = await getSellerBySlug(slug);
   if (!seller) notFound();
 
   const template = getTemplate(seller.template);
   const colors = getEffectiveColors(seller.template, seller.colors);
-  const product = getProductById(productSlug);
+  const product = await getProductById(productSlug);
 
   if (!product || product.sellerId !== seller.id) {
     return (
@@ -50,7 +52,8 @@ export default async function ProductDetailPage({ params }: Props) {
     );
   }
 
-  const related = getAvailableProductsBySeller(seller.id)
+  const allProducts = await getAvailableProductsBySeller(seller.id);
+  const related = allProducts
     .filter((p) => p.id !== product.id && p.category === product.category)
     .slice(0, 4);
 

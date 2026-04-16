@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { loginSchema, type LoginInput } from "@/lib/validations";
-import { getSupabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,8 +32,11 @@ export default function LoginPage() {
     }
 
     setLoading(true);
-    const supabase = getSupabase();
-    if (!supabase) {
+
+    let supabase;
+    try {
+      supabase = createClient();
+    } catch {
       setServerError(
         "Authentication is not configured. Please set up Supabase credentials."
       );
@@ -53,6 +56,7 @@ export default function LoginPage() {
     }
 
     router.push("/dashboard");
+    router.refresh();
   }
 
   return (

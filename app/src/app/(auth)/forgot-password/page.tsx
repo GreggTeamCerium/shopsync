@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "@/lib/validations";
-import { getSupabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
 import { CheckCircle2 } from "lucide-react";
 
 export default function ForgotPasswordPage() {
@@ -35,8 +35,11 @@ export default function ForgotPasswordPage() {
     }
 
     setLoading(true);
-    const supabase = getSupabase();
-    if (!supabase) {
+
+    let supabase;
+    try {
+      supabase = createClient();
+    } catch {
       setServerError(
         "Authentication is not configured. Please set up Supabase credentials."
       );

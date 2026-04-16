@@ -11,7 +11,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const seller = getSellerBySlug(slug);
+  const seller = await getSellerBySlug(slug);
   if (!seller) return {};
   return {
     title: `Shop ${seller.storeName}`,
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ShopPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const resolvedSearchParams = await searchParams;
-  const seller = getSellerBySlug(slug);
+  const seller = await getSellerBySlug(slug);
 
   if (!seller) {
     notFound();
@@ -30,7 +30,7 @@ export default async function ShopPage({ params, searchParams }: Props) {
 
   const template = getTemplate(seller.template);
   const colors = getEffectiveColors(seller.template, seller.colors);
-  const products = getAvailableProductsBySeller(seller.id);
+  const products = await getAvailableProductsBySeller(seller.id);
   const initialCategory =
     typeof resolvedSearchParams.category === "string"
       ? resolvedSearchParams.category

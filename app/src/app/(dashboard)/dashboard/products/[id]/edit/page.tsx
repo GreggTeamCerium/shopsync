@@ -1,26 +1,26 @@
-"use client";
-
-import { useState, use } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import {
+  getCurrentSeller,
+  getProductById,
+  getUniqueBrandsBySeller,
+} from "@/lib/data";
 import { ProductForm } from "@/components/dashboard/product-form";
-import { getProductById, updateProduct } from "@/lib/data";
-import { productSchema } from "@/lib/validations";
+import { updateProductAction } from "../../actions";
 import type { ProductInput } from "@/lib/validations";
 
-export default function EditProductPage({
+export default async function EditProductPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const product = getProductById(id);
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const { id } = await params;
+  const seller = await getCurrentSeller();
+  if (!seller) return null;
 
-  if (!product) {
+  const product = await getProductById(id);
+
+  if (!product || product.sellerId !== seller.id) {
     return (
       <div className="max-w-3xl mx-auto text-center py-12">
         <h1 className="text-xl font-bold text-navy mb-2">Product not found</h1>
@@ -31,19 +31,12 @@ export default function EditProductPage({
     );
   }
 
-  function handleSubmit(data: ProductInput) {
-    const result = productSchema.safeParse(data);
-    if (!result.success) {
-      setError(result.error.issues[0].message);
-      return;
-    }
-    updateProduct(id, {
-      ...result.data,
-      description: result.data.description ?? "",
-      images: result.data.images ?? [],
-      status: result.data.status ?? "available",
-    });
-    router.push("/dashboard/products");
+  const existingBrands = await getUniqueBrandsBySeller(seller.id);
+
+  // Bind id to the action so the form can call it with just the data.
+  async function handleUpdate(data: ProductInput) {
+    "use server";
+    return updateProductAction(id, data);
   }
 
   return (
@@ -58,13 +51,10 @@ export default function EditProductPage({
         </Link>
         <h1 className="text-2xl font-bold text-navy">Edit Product</h1>
       </div>
-      {error && (
-        <div className="mb-4 p-3 rounded-lg bg-accent/10 text-accent text-sm">
-          {error}
-        </div>
-      )}
       <ProductForm
-        onSubmit={handleSubmit}
+        onSubmit={handleUpdate}
+        existingBrands={existingBrands}
+        submitLabel="Save Changes"
         defaultValues={{
           name: product.name,
           brand: product.brand,
@@ -77,14 +67,6 @@ export default function EditProductPage({
           status: product.status === "sold" ? "available" : product.status,
         }}
       />
-      <div className="mt-6 flex gap-3 justify-end">
-        <Link href="/dashboard/products">
-          <Button variant="outline">Cancel</Button>
-        </Link>
-        <Button type="submit" form="product-form">
-          Save Changes
-        </Button>
-      </div>
     </div>
   );
 }

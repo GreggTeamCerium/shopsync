@@ -10,7 +10,7 @@ export default async function CheckoutSuccessPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const seller = getSellerBySlug(slug);
+  const seller = await getSellerBySlug(slug);
   if (!seller) notFound();
 
   const template = getTemplate(seller.template);
@@ -42,7 +42,7 @@ export default async function CheckoutSuccessPage({
       </p>
       <Link
         href={`/store/${slug}/shop`}
-        className="inline-flex items-center px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+        className="inline-flex items-center px-6 py-2 text-sm font-semibold transition-opacity hover:opacity-90"
         style={{
           backgroundColor: colors.primary,
           color: colors.secondary,

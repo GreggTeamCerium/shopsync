@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import type { SubscriptionTier } from "@/lib/data";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -28,9 +29,24 @@ const navItems = [
   },
 ];
 
-export function DashboardSidebar() {
+const TIER_LABEL: Record<SubscriptionTier, string> = {
+  free: "Free Plan",
+  starter: "Starter Plan",
+  pro: "Pro Plan",
+};
+
+interface DashboardSidebarProps {
+  storeName: string;
+  subscriptionTier: SubscriptionTier;
+}
+
+export function DashboardSidebar({
+  storeName,
+  subscriptionTier,
+}: DashboardSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const initial = (storeName.charAt(0) || "S").toUpperCase();
 
   return (
     <>
@@ -108,13 +124,15 @@ export function DashboardSidebar() {
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center gap-3 px-3">
             <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
-              S
+              {initial}
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-navy truncate">
-                My Store
+                {storeName}
               </p>
-              <p className="text-xs text-gray-500">Free Plan</p>
+              <p className="text-xs text-gray-500">
+                {TIER_LABEL[subscriptionTier]}
+              </p>
             </div>
           </div>
         </div>
