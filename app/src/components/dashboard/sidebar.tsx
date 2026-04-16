@@ -11,16 +11,25 @@ import {
   Store,
   Menu,
   X,
+  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import type { SubscriptionTier } from "@/lib/data";
 
-const navItems = [
+interface NavItem {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  badge?: string;
+}
+
+const navItems: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/products", label: "Products", icon: Package },
   { href: "/dashboard/orders", label: "Orders", icon: ShoppingCart },
   { href: "/dashboard/settings", label: "Store Settings", icon: Settings },
+  { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
   {
     href: "/dashboard/import",
     label: "Import from Instagram",

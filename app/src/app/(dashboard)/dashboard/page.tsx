@@ -7,10 +7,12 @@ import {
   CheckCircle2,
   Circle,
   ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { getCurrentSeller, getProductsBySeller, getOrdersBySeller } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
+import { productLimitFor } from "@/lib/feature-gates";
 
 export const metadata: Metadata = {
   title: "Dashboard — ShopSync",
@@ -28,6 +30,14 @@ export default async function DashboardPage() {
 
   const completedOrders = orders.filter((o) => o.status === "completed");
   const revenue = completedOrders.reduce((sum, o) => sum + o.total, 0);
+
+  const productLimit = productLimitFor(seller.subscriptionTier);
+  const isFinitePlan = Number.isFinite(productLimit);
+  const showUpgradeNudge =
+    seller.subscriptionTier === "free" &&
+    isFinitePlan &&
+    products.length >= productLimit - 2;
+  const atLimit = isFinitePlan && products.length >= productLimit;
 
   const stats = [
     {
@@ -86,6 +96,32 @@ export default async function DashboardPage() {
           Get your store up and running with the checklist below.
         </p>
       </div>
+
+      {/* Upgrade nudge */}
+      {showUpgradeNudge && (
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex items-start gap-3 flex-1">
+            <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-navy">
+                {atLimit
+                  ? `You've hit your ${productLimit}-product limit`
+                  : `You're using ${products.length} of ${productLimit} products`}
+              </p>
+              <p className="text-sm text-gray-600 mt-0.5">
+                Upgrade to Starter for 50 products and a custom domain — or Pro
+                for unlimited.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/dashboard/billing"
+            className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shrink-0"
+          >
+            Upgrade plan
+          </Link>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

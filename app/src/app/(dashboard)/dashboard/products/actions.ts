@@ -8,8 +8,10 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  countProductsBySeller,
 } from "@/lib/data";
 import { productSchema, type ProductInput } from "@/lib/validations";
+import { canAddProduct, productLimitFor } from "@/lib/feature-gates";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -30,6 +32,15 @@ export async function createProductAction(
   const result = productSchema.safeParse(data);
   if (!result.success) {
     return { ok: false, error: result.error.issues[0].message };
+  }
+
+  const currentCount = await countProductsBySeller(seller.id);
+  if (!canAddProduct(seller.subscriptionTier, currentCount)) {
+    const limit = productLimitFor(seller.subscriptionTier);
+    return {
+      ok: false,
+      error: `You've reached your ${limit}-product limit on the ${seller.subscriptionTier} plan. Upgrade to add more.`,
+    };
   }
 
   const { error } = await createProduct({

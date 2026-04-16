@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Seller, TemplateId } from "@/lib/data";
 import { templates } from "@/lib/templates";
 import { storeSettingsSchema } from "@/lib/validations";
+import { canUseCustomDomain } from "@/lib/feature-gates";
 import {
   updateSettingsAction,
   seedDemoDataAction,
@@ -89,6 +91,7 @@ export function SettingsForm({
 
   const templateList = Object.values(templates);
   const showSeedButton = isDevelopment || productCount === 0;
+  const customDomainUnlocked = canUseCustomDomain(seller.subscriptionTier);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -269,19 +272,39 @@ export function SettingsForm({
 
         {/* Custom Domain */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-navy mb-2">
-            Custom Domain
-          </h2>
+          <div className="flex items-center gap-2 mb-2">
+            <h2 className="text-lg font-semibold text-navy">Custom Domain</h2>
+            {!customDomainUnlocked && (
+              <span className="inline-flex items-center gap-1 text-xs bg-accent/10 text-accent font-semibold px-2 py-0.5 rounded-full">
+                <Lock className="h-3 w-3" />
+                Starter+
+              </span>
+            )}
+          </div>
           <p className="text-sm text-gray-500 mb-4">
-            Available on Starter and Pro plans
+            {customDomainUnlocked
+              ? "Point your own domain at this store."
+              : "Available on Starter and Pro plans."}
           </p>
           <div className="max-w-md">
             <input
               type="text"
               placeholder="yourdomain.com"
-              disabled
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-navy placeholder:text-gray-400 bg-gray-50 cursor-not-allowed"
+              disabled={!customDomainUnlocked}
+              className={`w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-navy placeholder:text-gray-400 ${
+                customDomainUnlocked
+                  ? "focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  : "bg-gray-50 cursor-not-allowed"
+              }`}
             />
+            {!customDomainUnlocked && (
+              <Link
+                href="/dashboard/billing"
+                className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+              >
+                Upgrade to unlock custom domains →
+              </Link>
+            )}
           </div>
         </div>
 

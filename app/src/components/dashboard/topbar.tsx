@@ -3,19 +3,41 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, User, LogOut, ExternalLink } from "lucide-react";
+import { ChevronDown, User, LogOut, ExternalLink, CreditCard } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import type { SubscriptionTier } from "@/lib/data";
+import { cn } from "@/lib/utils";
 
 interface DashboardTopbarProps {
   storeName: string;
   storeSlug: string;
   email: string;
+  subscriptionTier: SubscriptionTier;
 }
+
+const TIER_BADGE: Record<
+  SubscriptionTier,
+  { label: string; className: string }
+> = {
+  free: {
+    label: "Free",
+    className: "bg-gray-100 text-gray-600",
+  },
+  starter: {
+    label: "Starter",
+    className: "bg-primary/10 text-primary",
+  },
+  pro: {
+    label: "Pro",
+    className: "bg-accent/10 text-accent",
+  },
+};
 
 export function DashboardTopbar({
   storeName,
   storeSlug,
   email,
+  subscriptionTier,
 }: DashboardTopbarProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,6 +67,7 @@ export function DashboardTopbar({
   }
 
   const initial = (storeName.charAt(0) || email.charAt(0) || "S").toUpperCase();
+  const tierBadge = TIER_BADGE[subscriptionTier];
 
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 lg:px-8">
@@ -61,8 +84,20 @@ export function DashboardTopbar({
         </Link>
       </div>
 
-      {/* Account Menu */}
-      <div className="relative" ref={menuRef}>
+      <div className="flex items-center gap-3">
+        <Link
+          href="/dashboard/billing"
+          className={cn(
+            "hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full hover:opacity-80 transition-opacity",
+            tierBadge.className
+          )}
+        >
+          <CreditCard className="h-3 w-3" />
+          {tierBadge.label}
+        </Link>
+
+        {/* Account Menu */}
+        <div className="relative" ref={menuRef}>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
@@ -99,6 +134,7 @@ export function DashboardTopbar({
             </button>
           </div>
         )}
+        </div>
       </div>
     </header>
   );

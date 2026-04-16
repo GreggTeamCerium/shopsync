@@ -27,6 +27,8 @@ interface SellerRow {
   about_text: string | null;
   custom_domain: string | null;
   stripe_account_id: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
   subscription_tier: string;
   instagram_connected: boolean;
   created_at: string;
@@ -74,6 +76,8 @@ function mapSeller(row: SellerRow): Seller {
     aboutText: row.about_text ?? "",
     customDomain: row.custom_domain,
     stripeAccountId: row.stripe_account_id,
+    stripeCustomerId: row.stripe_customer_id ?? null,
+    stripeSubscriptionId: row.stripe_subscription_id ?? null,
     subscriptionTier: row.subscription_tier as SubscriptionTier,
     instagramConnected: row.instagram_connected,
     createdAt: row.created_at,
@@ -225,6 +229,16 @@ export async function getProductById(id: string): Promise<Product | null> {
     .maybeSingle();
   if (error || !data) return null;
   return mapProduct(data as ProductRow);
+}
+
+export async function countProductsBySeller(sellerId: string): Promise<number> {
+  const supabase = await createClient();
+  const { count, error } = await supabase
+    .from("products")
+    .select("*", { count: "exact", head: true })
+    .eq("seller_id", sellerId);
+  if (error) return 0;
+  return count ?? 0;
 }
 
 export async function getUniqueBrandsBySeller(

@@ -23,6 +23,8 @@ export interface Seller {
   aboutText: string;
   customDomain: string | null;
   stripeAccountId: string | null;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
   subscriptionTier: SubscriptionTier;
   instagramConnected: boolean;
   createdAt: string;

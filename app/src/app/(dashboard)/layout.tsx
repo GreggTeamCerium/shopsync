@@ -36,6 +36,7 @@ export default async function DashboardLayout({
           storeName={seller.storeName}
           storeSlug={seller.storeSlug}
           email={seller.email}
+          subscriptionTier={seller.subscriptionTier}
         />
         <main className="flex-1 overflow-y-auto p-6 lg:p-8">{children}</main>
       </div>
