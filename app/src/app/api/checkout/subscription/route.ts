@@ -76,9 +76,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Stripe error";
-    console.error("[checkout] failed", message);
+    const errObj = err as { type?: string; code?: string; param?: string };
+    console.error("[checkout] failed", {
+      message,
+      type: errObj.type,
+      code: errObj.code,
+      param: errObj.param,
+      hasSecret: !!process.env.STRIPE_SECRET_KEY,
+      secretLen: process.env.STRIPE_SECRET_KEY?.length,
+      hasStarterPrice: !!process.env.STRIPE_PRICE_STARTER,
+      starterPrice: process.env.STRIPE_PRICE_STARTER,
+      hasProPrice: !!process.env.STRIPE_PRICE_PRO,
+      proPrice: process.env.STRIPE_PRICE_PRO,
+    });
     return NextResponse.json(
-      { error: "Could not start checkout. Please try again." },
+      {
+        error: "Could not start checkout. Please try again.",
+        debug: process.env.NODE_ENV !== "production" ? message : {
+          message,
+          type: errObj.type,
+          code: errObj.code,
+          param: errObj.param,
+        },
+      },
       { status: 500 }
     );
   }
