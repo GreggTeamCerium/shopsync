@@ -54,7 +54,7 @@ export const storeSettingsSchema = z.object({
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Only lowercase letters, numbers, and hyphens"
     ),
-  template: z.enum(["resort", "minimal", "vintage"]),
+  template: z.enum(["resort", "minimal", "vintage", "gallery", "collective", "studio", "market", "vault", "bloom", "boardwalk"]),
   colors: z.object({
     primary: z.string(),
     secondary: z.string(),

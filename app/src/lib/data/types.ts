@@ -1,4 +1,4 @@
-export type TemplateId = "resort" | "minimal" | "vintage";
+export type TemplateId = "resort" | "minimal" | "vintage" | "gallery" | "collective" | "studio" | "market" | "vault" | "bloom" | "boardwalk";
 export type SubscriptionTier = "free" | "starter" | "pro";
 export type ProductCategory =
   | "Dresses"
