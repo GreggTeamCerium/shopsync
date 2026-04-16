@@ -59,14 +59,14 @@ Received: 500
       - generic [ref=e41]:
         - generic [ref=e42]: E
         - generic [ref=e43]:
-          - paragraph [ref=e44]: E2E Test Store 1776354931528
+          - paragraph [ref=e44]: E2E Test Store 1776355521611
           - paragraph [ref=e45]: Free Plan
     - generic [ref=e46]:
       - banner [ref=e47]:
         - generic [ref=e48]:
-          - heading "E2E Test Store 1776354931528" [level=1] [ref=e49]
+          - heading "E2E Test Store 1776355521611" [level=1] [ref=e49]
           - link "View Store" [ref=e50] [cursor=pointer]:
-            - /url: /store/e2e-test-store-1776354931528-1b70a95f
+            - /url: /store/e2e-test-store-1776355521611-59977fcc
             - img [ref=e51]
             - text: View Store
         - generic [ref=e55]:
@@ -232,20 +232,6 @@ Received: 500
 # Test source
 
 ```ts
-  175 |   await sharedPage.goto("/dashboard");
-  176 |   await sharedPage.goto("/dashboard/settings");
-  177 | 
-  178 |   // The Atelier template card should still be selected (border-primary class)
-  179 |   const atelierCard = sharedPage
-  180 |     .getByRole("button")
-  181 |     .filter({ hasText: "The Atelier" });
-  182 |   await expect(atelierCard).toBeVisible();
-  183 |   // Verify it's the active one — check it has the selected class
-  184 |   const className = await atelierCard.getAttribute("class");
-  185 |   expect(className).toContain("border-primary");
-  186 | });
-  187 | 
-  188 | test("5. public store page — store is visible to customers", async () => {
   189 |   await sharedPage.goto(`/store/${storeSlug}`);
   190 | 
   191 |   // Store name should appear
@@ -318,64 +304,78 @@ Received: 500
   258 | 
   259 |   const apiResponse = await apiResponsePromise;
   260 |   const apiStatus = apiResponse.status();
-  261 |   let apiBody: { url?: string; error?: string } = {};
-  262 |   try {
-  263 |     apiBody = (await apiResponse.json()) as typeof apiBody;
-  264 |   } catch {
-  265 |     /* ignore */
-  266 |   }
-  267 |   console.log(
-  268 |     `  POST /api/checkout/subscription -> ${apiStatus} ${JSON.stringify(apiBody).slice(0, 200)}`
-  269 |   );
-  270 | 
-  271 |   await navigationPromise;
-  272 |   expect(
-  273 |     apiStatus,
-  274 |     `Expected /api/checkout/subscription to return 200, got ${apiStatus}: ${apiBody.error ?? "(no error)"}`
-> 275 |   ).toBe(200);
+  261 |   const apiBodyText = await apiResponse.text();
+  262 |   console.log("\n========================================================");
+  263 |   console.log(`  POST /api/checkout/subscription -> ${apiStatus}`);
+  264 |   console.log("  FULL RESPONSE BODY:");
+  265 |   console.log(apiBodyText);
+  266 |   console.log("========================================================\n");
+  267 |   let apiBody: {
+  268 |     url?: string;
+  269 |     error?: string;
+  270 |     debug?:
+  271 |       | string
+  272 |       | { message?: string; type?: string; code?: string; param?: string };
+  273 |   } = {};
+  274 |   try {
+  275 |     apiBody = JSON.parse(apiBodyText) as typeof apiBody;
+  276 |   } catch {
+  277 |     /* ignore */
+  278 |   }
+  279 |   if (apiStatus >= 400 && apiBody.debug) {
+  280 |     console.log("  DEBUG FIELD (parsed):");
+  281 |     console.log(JSON.stringify(apiBody.debug, null, 2));
+  282 |     console.log("========================================================\n");
+  283 |   }
+  284 | 
+  285 |   await navigationPromise;
+  286 |   expect(
+  287 |     apiStatus,
+  288 |     `Expected /api/checkout/subscription to return 200, got ${apiStatus}: ${apiBody.error ?? "(no error)"}`
+> 289 |   ).toBe(200);
       |     ^ Error: Expected /api/checkout/subscription to return 200, got 500: Could not start checkout. Please try again.
-  276 |   expect(apiBody.url).toBeTruthy();
-  277 |   expect(apiBody.url).toContain("checkout.stripe.com");
-  278 |   console.log(`  Stripe checkout URL: ${apiBody.url?.slice(0, 80)}...`);
-  279 | 
-  280 |   // Navigate back so subsequent test has a non-Stripe origin
-  281 |   await sharedPage.goto("/dashboard");
-  282 | });
-  283 | 
-  284 | test("7. logout — sign out and protected routes redirect", async () => {
-  285 |   await sharedPage.goto("/dashboard", { waitUntil: "load" });
-  286 |   console.log(`  test 7 start url after goto /dashboard: ${sharedPage.url()}`);
-  287 | 
-  288 |   // Sanity check: must still be authenticated. If the prior /api/checkout
-  289 |   // failure dropped the session cookie (a separate production bug), the
-  290 |   // logout flow can't be exercised — surface it clearly.
-  291 |   if (/\/login/.test(sharedPage.url())) {
-  292 |     throw new Error(
-  293 |       "Session was lost between tests. The 500 from /api/checkout/subscription " +
-  294 |         "in test 6 appears to drop the Supabase auth cookie. The logout button " +
-  295 |         "itself could not be exercised. Bug: failed API routes should not corrupt the session."
-  296 |     );
-  297 |   }
-  298 | 
-  299 |   const headerChevron = sharedPage.locator("header button").last();
-  300 |   await expect(headerChevron).toBeVisible({ timeout: 15_000 });
-  301 |   await headerChevron.click();
-  302 | 
-  303 |   const logoutButton = sharedPage.getByRole("button", { name: /Log Out/i });
-  304 |   await expect(logoutButton).toBeVisible({ timeout: 5_000 });
-  305 |   await logoutButton.click();
-  306 | 
-  307 |   // Should redirect to home (anywhere outside /dashboard)
-  308 |   await sharedPage.waitForURL(
-  309 |     (url) => !url.pathname.startsWith("/dashboard"),
-  310 |     { timeout: 15_000 }
-  311 |   );
-  312 |   expect(sharedPage.url()).not.toMatch(/\/dashboard/);
-  313 | 
-  314 |   // Now visiting /dashboard should redirect to /login
-  315 |   await sharedPage.goto("/dashboard");
-  316 |   await sharedPage.waitForURL(/\/login/, { timeout: 15_000 });
-  317 |   expect(sharedPage.url()).toMatch(/\/login/);
-  318 | });
-  319 | 
+  290 |   expect(apiBody.url).toBeTruthy();
+  291 |   expect(apiBody.url).toContain("checkout.stripe.com");
+  292 |   console.log(`  Stripe checkout URL: ${apiBody.url?.slice(0, 80)}...`);
+  293 | 
+  294 |   // Navigate back so subsequent test has a non-Stripe origin
+  295 |   await sharedPage.goto("/dashboard");
+  296 | });
+  297 | 
+  298 | test("7. logout — sign out and protected routes redirect", async () => {
+  299 |   await sharedPage.goto("/dashboard", { waitUntil: "load" });
+  300 |   console.log(`  test 7 start url after goto /dashboard: ${sharedPage.url()}`);
+  301 | 
+  302 |   // Sanity check: must still be authenticated. If the prior /api/checkout
+  303 |   // failure dropped the session cookie (a separate production bug), the
+  304 |   // logout flow can't be exercised — surface it clearly.
+  305 |   if (/\/login/.test(sharedPage.url())) {
+  306 |     throw new Error(
+  307 |       "Session was lost between tests. The 500 from /api/checkout/subscription " +
+  308 |         "in test 6 appears to drop the Supabase auth cookie. The logout button " +
+  309 |         "itself could not be exercised. Bug: failed API routes should not corrupt the session."
+  310 |     );
+  311 |   }
+  312 | 
+  313 |   const headerChevron = sharedPage.locator("header button").last();
+  314 |   await expect(headerChevron).toBeVisible({ timeout: 15_000 });
+  315 |   await headerChevron.click();
+  316 | 
+  317 |   const logoutButton = sharedPage.getByRole("button", { name: /Log Out/i });
+  318 |   await expect(logoutButton).toBeVisible({ timeout: 5_000 });
+  319 |   await logoutButton.click();
+  320 | 
+  321 |   // Should redirect to home (anywhere outside /dashboard)
+  322 |   await sharedPage.waitForURL(
+  323 |     (url) => !url.pathname.startsWith("/dashboard"),
+  324 |     { timeout: 15_000 }
+  325 |   );
+  326 |   expect(sharedPage.url()).not.toMatch(/\/dashboard/);
+  327 | 
+  328 |   // Now visiting /dashboard should redirect to /login
+  329 |   await sharedPage.goto("/dashboard");
+  330 |   await sharedPage.waitForURL(/\/login/, { timeout: 15_000 });
+  331 |   expect(sharedPage.url()).toMatch(/\/login/);
+  332 | });
+  333 | 
 ```
